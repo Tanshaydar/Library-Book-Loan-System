@@ -1,0 +1,13 @@
+----------------------------------------------------------------
+Mon Apr 11 00:00:22 EEST 2016:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.12.1.1 - (1704137): instance a816c00e-0154-01f9-b3ef-00000eb40550 
+on database directory C:\Users\Tansel\workspace\LibraryBookLoanSystem\lblsdb with class loader sun.misc.Launcher$AppClassLoader@73d16e93 
+Loaded from file:/C:/Users/Tansel/workspace/LibraryBookLoanSystem/lib/derby.jar
+java.vendor=Oracle Corporation
+java.runtime.version=1.8.0_77-b03
+user.dir=C:\Users\Tansel\workspace\LibraryBookLoanSystem
+os.name=Windows 10
+os.arch=amd64
+os.version=10.0
+derby.system.home=null
+Database Class Loader started - derby.database.classpath=''
