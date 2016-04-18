@@ -5,80 +5,76 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.table.AbstractTableModel;
 
-import com.bbm487.tansel.sql.EnumValues.BOOK_AVAILABILITY;
+import com.bbm487.tansel.sql.EnumValues.USER_ROLE;
 
-public class BookSearchTableModel extends AbstractTableModel{
+public class UserTableModel extends AbstractTableModel{
 
-	public static final String[] columNames = {
-			"Book Name",
-			"Author",
-			"Information",
-			"Available"
+	public static final String[] columnNames = {
+			"User ID",
+			"User Name",
+			"User Role"
 	};
 	
-	private List<Book> data;
+	private List<User> data;
 	
-	public BookSearchTableModel() {
+	public UserTableModel() {
 		super();
-		data = new CopyOnWriteArrayList<Book>();
+		data = new CopyOnWriteArrayList<User>();
 	}
 	
 	@Override
 	public int getColumnCount() {
-		return columNames.length;
+		return columnNames.length;
 	}
 
 	@Override
 	public int getRowCount() {
 		return data.size();
 	}
-	
+
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
 		switch (columnIndex) {
 		case 0:
-			return String.class;
+			return Integer.class;
 		case 1:
 			return String.class;
 		case 2:
-			return String.class;
-		case 3:
-			return BOOK_AVAILABILITY.class;
+			return USER_ROLE.class;
 		default:
 			return String.class;
 		}
 	}
-
+	
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
-		if(data.size() == 0 || rowIndex >= data.size()){
+		if(data.size() == 0 || rowIndex >= data.size()) {
 			return null;
 		}
-		Book book = data.get(rowIndex);
+		
+		User user = data.get(rowIndex);
 		Object result = null;
+		
 		switch (columnIndex) {
 		case 0:
-			result = book.getName();
+			result = user.getUserId();
 			break;
 		case 1:
-			result = book.getAuthor();
+			result = user.getUserName();
 			break;
 		case 2:
-			result = book.getInformation();
+			result = user.getUserRole();
 			break;
-		case 3:
-			result = book.getAvailable();
-			break;
-
 		default:
 			break;
 		}
+		
 		return result;
 	}
 	
 	@Override
 	public String getColumnName(int column) {
-		return columNames[column];
+		return columnNames[column];
 	}
 	
 	@Override
@@ -87,15 +83,16 @@ public class BookSearchTableModel extends AbstractTableModel{
 	}
 	
 	public void clearTable(){
-		if(data.size() == 0){
+		if(data.size() == 0) {
 			return;
 		}
 		data.clear();
 		fireTableRowsDeleted(0, data.size());
 	}
-
-	public void addBook(Book book){
-		data.add(book);
+	
+	public void addUser(User user){
+		data.add(user);
 		fireTableDataChanged();
 	}
+
 }

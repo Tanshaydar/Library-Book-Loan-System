@@ -6,9 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.apache.derby.iapi.services.io.DerbyIOException;
-import org.apache.derby.shared.common.error.DerbySQLIntegrityConstraintViolationException;
-
+import com.bbm487.tansel.model.User;
 import com.google.inject.Inject;
 
 public class SqlExecutions {
@@ -108,6 +106,50 @@ public class SqlExecutions {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		return null;
+	}
+
+	public ResultSet checkUser(String userName, String password) {
+		Statement statement = null;
+		String query = "SELECT * FROM USERS WHERE username='" + userName + "' AND password='" + password + "'";
+		
+		try {
+			statement = connection.createStatement();
+			return statement.executeQuery(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public ResultSet getUserList() {
+		Statement statement = null;
+		
+		try {
+			statement = connection.createStatement();
+			return statement.executeQuery(SqlQueries.GET_USER_LIST);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+
+	public ResultSet addUser(User user) {
+		String query = "INSERT INTO USERS (username, password, role) VALUES ('" 
+				+ user.getUserName() + "', '" 
+				+ user.getPassword() + "', " 
+				+ user.getUserRole().ordinal() + ")";
+		
+		Statement statement = null;
+
+		try {
+			statement = connection.createStatement();
+			return statement.executeQuery(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 		return null;
 	}
 }

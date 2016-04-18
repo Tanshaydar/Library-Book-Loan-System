@@ -8,12 +8,16 @@ import java.sql.SQLException;
 import javax.swing.JOptionPane;
 
 import com.bbm487.tansel.LibraryBookLoanSystemModule.LoginWindowProvider;
+import com.bbm487.tansel.event.LoginEvent;
 import com.bbm487.tansel.model.Book;
-import com.bbm487.tansel.sql.SqlExecutions;
-import com.bbm487.tansel.sql.SqlQueries;
 import com.bbm487.tansel.sql.EnumValues.BOOK_AVAILABILITY;
+import com.bbm487.tansel.sql.SqlExecutions;
+import com.bbm487.tansel.view.BookWindow;
 import com.bbm487.tansel.view.LoginWindow;
 import com.bbm487.tansel.view.MainWindow;
+import com.bbm487.tansel.view.UserListWindow;
+import com.bbm487.tansel.view.UserWindow;
+import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 
 public class MainController {
@@ -24,19 +28,32 @@ public class MainController {
 	
 	private MainWindow mainWindow;
 	
+	private UserListController userListController;
+	private BookController bookController;
+	private UserController userController;
+	
 	@Inject
 	public MainController(SqlExecutions sqlExecutions,
 			MainWindow mainWindow, 
-			LoginWindowProvider loginWindowProvider) {
+			LoginWindowProvider loginWindowProvider,
+			UserListController userListController,
+			UserController userController,
+			BookController bookController) {
 		this.sqlExecutions = sqlExecutions;
 		this.mainWindow = mainWindow;
 		this.loginWindowProvider = loginWindowProvider;
 		
-		addActionListenerToExitButton();
+		this.userListController = userListController;
+		this.userController = userController;
+		this.bookController = bookController;
+		
 		addActionListenerToLoginButton();
+		addActionListenerToLogoutButton();
 		addActionListenerToSearchButton();
+		addCustomerActionListeners();
+		addLibrarianActionListeners();
 	}
-	
+
 	public void showMainWindow(){
 		mainWindow.setVisible(true);
 	}
@@ -62,7 +79,7 @@ public class MainController {
 									resultSet.getString("name"),
 									resultSet.getString("author"),
 									resultSet.getString("information"),
-									resultSet.getInt("available"));
+									BOOK_AVAILABILITY.values()[resultSet.getInt("available")]);
 							mainWindow.getBookSearchTableModel().addBook(book);
 						}
 					} catch (SQLException e1) {
@@ -86,17 +103,48 @@ public class MainController {
 		});
 	}
 	
-	private void addActionListenerToExitButton(){
-		mainWindow.addActionListenerExitButton(new ActionListener() {
+	private void addActionListenerToLogoutButton(){
+		mainWindow.addActionlistenerLogoutButton(new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				int result = JOptionPane.showConfirmDialog(mainWindow, "Application will close.\n Are you sure you want to exit?",
-						"Are you sure?", JOptionPane.INFORMATION_MESSAGE);
-				if(result == JOptionPane.YES_OPTION){
-					System.exit(0);
-				}
+				mainWindow.enableLogoutUiChanges();
 			}
 		});
+	}
+	
+	private void addLibrarianActionListeners() {
+		mainWindow.getLibrarianSettingsPanel().getButtonAddBook().addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				bookController.showWindow(mainWindow);
+			}
+		});
+		
+		mainWindow.getLibrarianSettingsPanel().getButtonAddUser().addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				userController.showWindow(mainWindow);
+			}
+		});
+		
+		mainWindow.getLibrarianSettingsPanel().getButtonSeeUserList().addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				userListController.showWindow(mainWindow);
+			}
+		});
+	}
+
+	private void addCustomerActionListeners() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	@Subscribe
+	public void handleLoginEvent(LoginEvent loginEvent){
+		mainWindow.enableLoginUiChanges(loginEvent.getUser());
 	}
 }

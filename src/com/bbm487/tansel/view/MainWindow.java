@@ -1,21 +1,20 @@
 package com.bbm487.tansel.view;
 
-import javax.swing.JFrame;
-
-import net.miginfocom.swing.MigLayout;
-import javax.swing.JPanel;
-
-import com.bbm487.tansel.LibraryBookLoanSystemModule.LoginWindowProvider;
-import com.bbm487.tansel.model.BookSearchTableModel;
-import com.google.inject.Inject;
-
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+
+import com.bbm487.tansel.model.BookSearchTableModel;
+import com.bbm487.tansel.model.User;
+import com.google.inject.Inject;
+
+import net.miginfocom.swing.MigLayout;
 
 public class MainWindow extends JFrame{
 
@@ -31,26 +30,41 @@ public class MainWindow extends JFrame{
 	private JTextField textFieldInformation;
 	
 	private JButton buttonLogin;
-	private JButton buttonExit;
+	private JButton buttonLogout;
 	private JButton buttonSearch;
 	
 	private JScrollPane scrollPaneSearchResults;
 	
+	private CustomerSettingsPanel customerSettingsPanel;
+	private LibrarianSettingsPanel librarianSettingsPanel;
+	
 	@Inject
-	public MainWindow() {		
+	public MainWindow(CustomerSettingsPanel customerSettingsPanel,
+			LibrarianSettingsPanel librarianSettingsPanel) {
+
+		this.customerSettingsPanel = customerSettingsPanel;
+		this.librarianSettingsPanel = librarianSettingsPanel;
+		
+		
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 		setTitle("Library Book Loan System - Group 16 - Tansel Altınel");
 		contentPane = new JPanel();
 		setContentPane(contentPane);
 		
-		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		
-		contentPane.setLayout(new MigLayout("", "[10px:10px:10px][][600px:n,grow][10px:10px:10px]", "[30px:30px:30px][30px:30px:30px][30px:30px:30px][30px:30px:30px][30px:30px:30px][10px:10px:10px][300px:n,grow][10px:10px:10px]"));
+		contentPane.setLayout(new MigLayout("", "[10px:10px:10px][][600px:n,grow][grow][10px:10px:10px]", "[30px:30px:30px,grow][30px:30px:30px][30px:30px:30px][30px:30px:30px][10px:10px:10px][300px:n,grow][10px:10px:10px]"));
 		
 		buttonLogin = new JButton("Login");
-		contentPane.add(buttonLogin, "cell 1 0,alignx left,growy");
+		contentPane.add(buttonLogin, "cell 1 0,alignx left,growy,hidemode 3");
 		
-		buttonExit = new JButton("Exit");
-		contentPane.add(buttonExit, "cell 2 0,alignx right,growy");
+		buttonLogout = new JButton("Logout");
+		buttonLogout.setVisible(false);
+		contentPane.add(buttonLogout,  "cell 1 0,alignx left,growy,hidemode 3");
+		
+		contentPane.add(customerSettingsPanel, "cell 2 0 2 1,grow,hidemode 3");
+		customerSettingsPanel.setVisible(false);
+		contentPane.add(librarianSettingsPanel, "cell 2 0 2 1,grow,hidemode 3");
+		librarianSettingsPanel.setVisible(false);
 		
 		labelBookName = new JLabel("Book Name:");
 		contentPane.add(labelBookName, "cell 1 1,alignx left,aligny center");
@@ -74,13 +88,14 @@ public class MainWindow extends JFrame{
 		textFieldInformation.setColumns(10);
 		
 		buttonSearch = new JButton("Search");
-		contentPane.add(buttonSearch, "cell 1 4 2 1,grow");
+		contentPane.add(buttonSearch, "cell 3 1 1 3,grow");
 		
 		scrollPaneSearchResults = new JScrollPane();
-		contentPane.add(scrollPaneSearchResults, "cell 1 6 2 1,grow");
+		contentPane.add(scrollPaneSearchResults, "cell 1 5 3 1,grow");
 		
 		bookSearchTableModel = new BookSearchTableModel();
 		searchResultTable = new JTable(bookSearchTableModel);
+		searchResultTable.setFillsViewportHeight(true);
 		searchResultTable.setRowHeight(30);
 		scrollPaneSearchResults.setViewportView(searchResultTable);		
 		
@@ -88,12 +103,42 @@ public class MainWindow extends JFrame{
 		setLocationRelativeTo(null);
 	}
 	
-	public void addActionListenerExitButton(ActionListener listener){
-		buttonExit.addActionListener(listener);
+	public void enableLoginUiChanges(User user){
+		getButtonLogin().setVisible(false);
+		getButtonLogout().setVisible(true);
+		switch (user.getUserRole()) {
+		case CUSTOMER:
+			customerSettingsPanel.setVisible(true);
+			break;
+		case LIBRARIAN:
+			librarianSettingsPanel.setVisible(true);
+			break;
+		default:
+			break;
+		}
+	}
+	
+	public void enableLogoutUiChanges(){
+		getButtonLogin().setVisible(true);
+		getButtonLogout().setVisible(false);
+		customerSettingsPanel.setVisible(false);
+		librarianSettingsPanel.setVisible(false);
+	}
+	
+	public CustomerSettingsPanel getCustomerSettingsPanel() {
+		return customerSettingsPanel;
+	}
+	
+	public LibrarianSettingsPanel getLibrarianSettingsPanel() {
+		return librarianSettingsPanel;
 	}
 	
 	public void addActionListenerLoginButton(ActionListener listener){
 		buttonLogin.addActionListener(listener);
+	}
+	
+	public void addActionlistenerLogoutButton(ActionListener listener){
+		buttonLogout.addActionListener(listener);
 	}
 	
 	public void addActionlistenerToSearchButton(ActionListener listener){
@@ -139,9 +184,9 @@ public class MainWindow extends JFrame{
 	public JButton getButtonLogin() {
 		return buttonLogin;
 	}
-
-	public JButton getButtonExit() {
-		return buttonExit;
+	
+	public JButton getButtonLogout() {
+		return buttonLogout;
 	}
 
 	public JButton getButtonSearch() {

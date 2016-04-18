@@ -1,17 +1,19 @@
 package com.bbm487.tansel.model;
 
+import com.bbm487.tansel.sql.EnumValues.BOOK_AVAILABILITY;
+
 public class Book {
 
 	private int barcode;
 	private String name;
 	private String author;
 	private String information;
-	private int available;
+	private BOOK_AVAILABILITY available;
 	
 	public Book() {
 	}
 
-	public Book(int barcode, String name, String author, String information, int available) {
+	public Book(int barcode, String name, String author, String information, BOOK_AVAILABILITY available) {
 		this.barcode = barcode;
 		this.name = name;
 		this.author = author;
@@ -51,11 +53,11 @@ public class Book {
 		this.information = information;
 	}
 	
-	public int getAvailable() {
+	public BOOK_AVAILABILITY getAvailable() {
 		return available;
 	}
 	
-	public void setAvailable(int available) {
+	public void setAvailable(BOOK_AVAILABILITY available) {
 		this.available = available;
 	}
 }
