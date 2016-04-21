@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import com.bbm487.tansel.model.User;
 import com.bbm487.tansel.sql.SqlExecutions;
@@ -46,14 +47,16 @@ public class UserController {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				User user = userWindow.getUser();
+				if(user == null){
+					return;
+				}
 				if(user.getUserId() < 0) {
-					ResultSet resultSet = sqlExecutions.addUser(user);
-					try {
-						if(resultSet.next()) {
-							System.err.println(resultSet.getString("username"));
-						}
-					} catch (SQLException e1) {
-						e1.printStackTrace();
+					boolean resultSet = sqlExecutions.addUser(user);
+					if(!resultSet){
+						JOptionPane.showMessageDialog(userWindow, "User is successfully added!", "Success!", JOptionPane.INFORMATION_MESSAGE);
+						userWindow.setVisible(false);
+					} else {
+						JOptionPane.showMessageDialog(userWindow, "User could not be added!", "Error!", JOptionPane.ERROR_MESSAGE);
 					}
 				} else {
 					System.err.println(user.getUserId());

@@ -1,5 +1,6 @@
 package com.bbm487.tansel.view;
 
+import java.awt.event.ActionListener;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -57,6 +58,28 @@ public class UserListWindow extends JDialog{
 		for (User user : userList) {
 			userTableModel.addUser(user);
 		}
+	}
+	
+	public void addActionListenerToButtonAddUser(ActionListener listener){
+		buttonAddNewUser.addActionListener(listener);
+	}
+	public void addActionListenerToButtonEditUser(ActionListener listener){
+		buttonEditSelectedUser.addActionListener(listener);
+	}
+	public void addActionListenerToButtonDeleteUser(ActionListener listener){
+		buttonDeleteSelectedUser.addActionListener(listener);
+	}
+	
+	public JButton getButtonAddNewUser() {
+		return buttonAddNewUser;
+	}
+	
+	public JButton getButtonEditSelectedUser() {
+		return buttonEditSelectedUser;
+	}
+	
+	public JButton getButtonDeleteSelectedUser() {
+		return buttonDeleteSelectedUser;
 	}
 
 }

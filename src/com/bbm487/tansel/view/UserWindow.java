@@ -7,6 +7,7 @@ import com.bbm487.tansel.sql.EnumValues.USER_ROLE;
 import com.google.inject.Inject;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.JComboBox;
@@ -98,6 +99,11 @@ public class UserWindow extends JDialog{
 			user.setUserName(textFieldUserName.getText());
 			user.setPassword(new String(passwordField.getPassword()));
 			user.setUserRole((USER_ROLE) comboBoxUserRole.getSelectedItem());
+			if(textFieldUserName.getText() == null || textFieldUserName.getText().isEmpty()
+					|| passwordField.getPassword().length == 0){
+				JOptionPane.showMessageDialog(this, "You need to fill the fields!", "Error!", JOptionPane.ERROR_MESSAGE);
+				return null;
+			}
 			return user;
 		} else {
 			user.setUserName(textFieldUserName.getText());

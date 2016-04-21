@@ -15,16 +15,16 @@ public class LibrarianSettingsPanel extends JPanel {
 	
 	@Inject
 	public LibrarianSettingsPanel() {
-		setLayout(new MigLayout("", "[][][]", "[]"));
+		setLayout(new MigLayout("fill, insets 0 0 0 0", "[][][]", "[]"));
 		
 		buttonAddUser = new JButton("Add User");
-		add(buttonAddUser, "cell 0 0,growy");
+		add(buttonAddUser, "cell 0 0,grow");
 		
 		buttonAddBook = new JButton("Add Book");
-		add(buttonAddBook, "cell 1 0,growy");
+		add(buttonAddBook, "cell 1 0,grow");
 		
 		buttonSeeUserList = new JButton("See User List");
-		add(buttonSeeUserList, "cell 2 0,growy");
+		add(buttonSeeUserList, "cell 2 0,grow");
 	}
 	
 	public JButton getButtonAddUser() {

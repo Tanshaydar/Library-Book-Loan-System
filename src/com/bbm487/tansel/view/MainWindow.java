@@ -52,18 +52,18 @@ public class MainWindow extends JFrame{
 		contentPane = new JPanel();
 		setContentPane(contentPane);
 		
-		contentPane.setLayout(new MigLayout("", "[10px:10px:10px][][600px:n,grow][grow][10px:10px:10px]", "[30px:30px:30px,grow][30px:30px:30px][30px:30px:30px][30px:30px:30px][10px:10px:10px][300px:n,grow][10px:10px:10px]"));
+		contentPane.setLayout(new MigLayout("", "[10px:10px:10px][][600px:n,grow][grow][10px:10px:10px]", "[35px:35px:35px,grow][30px:30px:30px][30px:30px:30px][30px:30px:30px][10px:10px:10px][300px:n,grow][10px:10px:10px]"));
 		
 		buttonLogin = new JButton("Login");
-		contentPane.add(buttonLogin, "cell 1 0,alignx left,growy,hidemode 3");
+		contentPane.add(buttonLogin, "hidemode 3,cell 1 0,alignx left,aligny center");
 		
 		buttonLogout = new JButton("Logout");
 		buttonLogout.setVisible(false);
-		contentPane.add(buttonLogout,  "cell 1 0,alignx left,growy,hidemode 3");
+		contentPane.add(buttonLogout,  "hidemode 3,cell 1 0,alignx left,aligny center");
 		
-		contentPane.add(customerSettingsPanel, "cell 2 0 2 1,grow,hidemode 3");
+		contentPane.add(customerSettingsPanel, "cell 2 0 2 1,growx,aligny center,hidemode 3");
 		customerSettingsPanel.setVisible(false);
-		contentPane.add(librarianSettingsPanel, "cell 2 0 2 1,grow,hidemode 3");
+		contentPane.add(librarianSettingsPanel, "cell 2 0 2 1,growx,aligny center,hidemode 3");
 		librarianSettingsPanel.setVisible(false);
 		
 		labelBookName = new JLabel("Book Name:");

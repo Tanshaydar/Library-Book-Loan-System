@@ -135,7 +135,7 @@ public class SqlExecutions {
 		return null;
 	}
 
-	public ResultSet addUser(User user) {
+	public boolean addUser(User user) {
 		String query = "INSERT INTO USERS (username, password, role) VALUES ('" 
 				+ user.getUserName() + "', '" 
 				+ user.getPassword() + "', " 
@@ -145,11 +145,11 @@ public class SqlExecutions {
 
 		try {
 			statement = connection.createStatement();
-			return statement.executeQuery(query);
+			return statement.execute(query);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		
-		return null;
+		return false;
 	}
 }
