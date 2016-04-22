@@ -4,7 +4,8 @@ public class EnumValues {
 
 	public enum USER_ROLE{
 		CUSTOMER,
-		LIBRARIAN
+		LIBRARIAN,
+		GUEST
 	}
 	
 	public enum BOOK_AVAILABILITY{

@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import com.bbm487.tansel.model.Book;
 import com.bbm487.tansel.model.User;
 import com.google.inject.Inject;
 
@@ -33,15 +34,6 @@ public class SqlExecutions {
 			connection.createStatement().execute(SqlQueries.CREATE_TABLE_CHECKOUT);
 			connection.createStatement().execute(SqlQueries.CREATE_TABLE_FINE);
 			connection.createStatement().execute(SqlQueries.CREATE_TABLE_WAITINGLIST);	
-//
-//			connection.createStatement().execute(SqlQueries.CREATE_TABLE_ALTER22);
-//			connection.createStatement().execute(SqlQueries.CREATE_TABLE_ALTER23);
-//			
-//			connection.createStatement().execute(SqlQueries.CREATE_TABLE_ALTER32);
-//			connection.createStatement().execute(SqlQueries.CREATE_TABLE_ALTER33);
-//
-//			connection.createStatement().execute(SqlQueries.CREATE_TABLE_ALTER52);
-//			connection.createStatement().execute(SqlQueries.CREATE_TABLE_ALTER53);
 
 			connection.createStatement().execute(SqlQueries.CREATE_TABLE_ALTER111);
 			connection.createStatement().execute(SqlQueries.CREATE_TABLE_ALTER112);
@@ -141,15 +133,57 @@ public class SqlExecutions {
 				+ user.getPassword() + "', " 
 				+ user.getUserRole().ordinal() + ")";
 		
-		Statement statement = null;
+		return executeStatement(query);
+	}
 
+	public boolean deleteUser(User user) {
+		String query = "DELETE FROM USERS WHERE user_id = " + user.getUserId();
+
+		return executeStatement(query);
+	}
+
+	public boolean updateUser(User user) {
+		String query = "UPDATE USERS SET username ='" + user.getUserName() 
+		+ "', password = '" + user.getPassword() 
+		+ "', role = " + user.getUserRole().ordinal()
+		+ "WHERE user_id = " + user.getUserId();
+		
+		return executeStatement(query);
+	}
+
+	public boolean addBook(Book book) {
+		String query = "INSERT INTO BOOKS (name, author, information, availability) VALUES ('"
+				+ book.getName() + "', '"
+				+ book.getAuthor() + "', '"
+				+ book.getInformation() + "', "
+				+ book.getAvailable().ordinal() + ")";
+		
+		return executeStatement(query);
+	}
+
+	public boolean updateBook(Book book) {
+		String query = "UPDATE BOOK SET name ='" + book.getName()
+		+"', author = '" + book.getAuthor()
+		+"', information = '" + book.getInformation()
+		+"', role = " + book.getAvailable().ordinal() + ")";
+		
+		return executeStatement(query);
+	}
+	
+	public boolean deleteBook(Book book){
+		String query = "DELETE FROM BOOK WHERE bardoce = " + book.getBarcode();
+		
+		return executeStatement(query);
+	}
+	
+	private boolean executeStatement(String query){
+		Statement statement = null;
 		try {
 			statement = connection.createStatement();
 			return statement.execute(query);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
 		return false;
 	}
 }

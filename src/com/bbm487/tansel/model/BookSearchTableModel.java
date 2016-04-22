@@ -6,6 +6,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import javax.swing.table.AbstractTableModel;
 
 import com.bbm487.tansel.sql.EnumValues.BOOK_AVAILABILITY;
+import com.google.inject.Inject;
 
 public class BookSearchTableModel extends AbstractTableModel{
 
@@ -18,6 +19,7 @@ public class BookSearchTableModel extends AbstractTableModel{
 	
 	private List<Book> data;
 	
+	@Inject
 	public BookSearchTableModel() {
 		super();
 		data = new CopyOnWriteArrayList<Book>();
@@ -97,5 +99,9 @@ public class BookSearchTableModel extends AbstractTableModel{
 	public void addBook(Book book){
 		data.add(book);
 		fireTableDataChanged();
+	}
+
+	public List<Book> getData() {
+		return data;
 	}
 }

@@ -94,5 +94,9 @@ public class UserTableModel extends AbstractTableModel{
 		data.add(user);
 		fireTableDataChanged();
 	}
+	
+	public List<User> getData() {
+		return data;
+	}
 
 }

@@ -1,11 +1,14 @@
 package com.bbm487.tansel;
 
 import com.bbm487.tansel.controller.BookController;
+import com.bbm487.tansel.controller.LoginController;
 import com.bbm487.tansel.controller.MainController;
 import com.bbm487.tansel.controller.UserController;
 import com.bbm487.tansel.controller.UserListController;
 import com.bbm487.tansel.factories.LoginWindowFactory;
+import com.bbm487.tansel.model.BookSearchTableModel;
 import com.bbm487.tansel.sql.SqlExecutions;
+import com.bbm487.tansel.utility.LoggedUserInformation;
 import com.bbm487.tansel.view.BookWindow;
 import com.bbm487.tansel.view.CustomerSettingsPanel;
 import com.bbm487.tansel.view.LibrarianSettingsPanel;
@@ -54,14 +57,17 @@ public class LibraryBookLoanSystemModule extends AbstractModule{
 		bind(MainController.class);
 		bind(MainWindow.class).in(Singleton.class);;
 		bind(SqlExecutions.class).in(Singleton.class);
+		bind(LoggedUserInformation.class).in(Singleton.class);
 		bind(CustomerSettingsPanel.class);
 		bind(LibrarianSettingsPanel.class);
 		bind(UserWindow.class);
 		bind(UserController.class);
 		bind(BookWindow.class);
 		bind(BookController.class);
+		bind(BookSearchTableModel.class);
 		bind(UserListWindow.class);
 		bind(UserListController.class);
+		bind(LoginController.class);
 		
 		install(new FactoryModuleBuilder().build(LoginWindowFactory.class));
 		

@@ -12,6 +12,9 @@ import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.JComboBox;
 import javax.swing.JPanel;
+
+import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
 
 public class UserWindow extends JDialog{
@@ -82,13 +85,24 @@ public class UserWindow extends JDialog{
 		pack();
 	}
 	
+	public void addActionListenerToEditButton(ActionListener listener){
+		buttonEditUser.addActionListener(listener);
+	}
+	public void addActionListenerToSaveButton(ActionListener listener){
+		buttonSaveUser.addActionListener(listener);
+	}
+	public void addActionListenerToDeleteButton(ActionListener listener){
+		buttonDeleteUser.addActionListener(listener);
+	}
+	
 	public void setUser(User user){
+		this.user = user;
 		textFieldUserId.setText(Integer.toString(user.getUserId()));
 		textFieldUserId.setVisible(true);
 		labelUserId.setVisible(true);
 		textFieldUserName.setText(user.getUserName());
 		passwordField.setText(null);
-		user.setUserRole(user.getUserRole());
+		comboBoxUserRole.setSelectedItem(user.getUserRole());
 		buttonEditUser.setVisible(true);
 	}
 	
@@ -133,9 +147,15 @@ public class UserWindow extends JDialog{
 	public JButton getButtonEditUser() {
 		return buttonEditUser;
 	}
-	
+
 	public JButton getButtonSaveUser() {
 		return buttonSaveUser;
+	}
+
+	public void setEditable(boolean editable) {
+		textFieldUserName.setEditable(editable);
+		passwordField.setEditable(editable);
+		comboBoxUserRole.setEnabled(editable);
 	}
 	
 }

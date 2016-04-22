@@ -10,6 +10,7 @@ import com.bbm487.tansel.event.LoginEvent;
 import com.bbm487.tansel.model.User;
 import com.bbm487.tansel.sql.SqlExecutions;
 import com.bbm487.tansel.sql.EnumValues.USER_ROLE;
+import com.bbm487.tansel.utility.LoggedUserInformation;
 import com.bbm487.tansel.view.LoginWindow;
 import com.google.common.eventbus.EventBus;
 import com.google.inject.Inject;
@@ -18,12 +19,15 @@ public class LoginController {
 
 	private SqlExecutions sqlExecutions;
 	private LoginWindow loginWindow;
+	private LoggedUserInformation loggedUserInformation;
 	private EventBus eventBus;
 	
 	@Inject
 	public LoginController(SqlExecutions sqlExecutions,
+			LoggedUserInformation loggedUserInformation,
 			EventBus eventBus) {
 		this.sqlExecutions = sqlExecutions;
+		this.loggedUserInformation = loggedUserInformation;
 		this.eventBus = eventBus;
 	}
 	
@@ -31,11 +35,12 @@ public class LoginController {
 		ResultSet resultSet = sqlExecutions.checkUser(userName, password);
 		
 		if(resultSet.next()) {
-			eventBus.post(new LoginEvent(
-					new User(
-							resultSet.getInt("user_id"),
-							resultSet.getString("username"),
-							USER_ROLE.values()[resultSet.getInt("role")])));
+			User loggedUser = new User(
+					resultSet.getInt("user_id"),
+					resultSet.getString("username"),
+					USER_ROLE.values()[resultSet.getInt("role")]); 
+			eventBus.post(new LoginEvent(loggedUser));
+			loggedUserInformation.setLoggedUser(loggedUser);
 			loginWindow.dispose();
 		} else {
 			JOptionPane.showMessageDialog(loginWindow, "Wrong username or password!", "Login Error!", JOptionPane.ERROR_MESSAGE);

@@ -2,21 +2,23 @@ package com.bbm487.tansel.controller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import com.bbm487.tansel.LibraryBookLoanSystemModule.LoginWindowProvider;
 import com.bbm487.tansel.event.LoginEvent;
 import com.bbm487.tansel.model.Book;
+import com.bbm487.tansel.model.BookSearchTableModel;
+import com.bbm487.tansel.model.User;
 import com.bbm487.tansel.sql.EnumValues.BOOK_AVAILABILITY;
 import com.bbm487.tansel.sql.SqlExecutions;
-import com.bbm487.tansel.view.BookWindow;
 import com.bbm487.tansel.view.LoginWindow;
 import com.bbm487.tansel.view.MainWindow;
-import com.bbm487.tansel.view.UserListWindow;
-import com.bbm487.tansel.view.UserWindow;
 import com.google.common.eventbus.Subscribe;
 import com.google.inject.Inject;
 
@@ -47,6 +49,7 @@ public class MainController {
 		this.userController = userController;
 		this.bookController = bookController;
 		
+		addMouseListenerToSearchTable();
 		addActionListenerToLoginButton();
 		addActionListenerToLogoutButton();
 		addActionListenerToSearchButton();
@@ -56,6 +59,41 @@ public class MainController {
 
 	public void showMainWindow(){
 		mainWindow.setVisible(true);
+	}
+	
+	private void addMouseListenerToSearchTable(){
+		mainWindow.getSearchResultTable().addMouseListener(new MouseListener() {
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+			}
+			
+			@Override
+			public void mouseExited(MouseEvent e) {
+			}
+			
+			@Override
+			public void mouseEntered(MouseEvent e) {
+			}
+			
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(e.getClickCount() >= 2){
+					if(mainWindow.getSearchResultTable().getSelectedRow() > -1){
+						int row = mainWindow.getSearchResultTable().convertRowIndexToModel(mainWindow.getSearchResultTable().getSelectedRow());
+						BookSearchTableModel bookSearchTableModel = (BookSearchTableModel) mainWindow.getSearchResultTable().getModel();
+						Book book = bookSearchTableModel.getData().get(row);
+						if( book != null){
+							bookController.showWindow(mainWindow, book, false);
+						}
+					}
+				}
+			}
+		});
 	}
 	
 	private void addActionListenerToSearchButton(){
@@ -118,7 +156,7 @@ public class MainController {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				bookController.showWindow(mainWindow);
+				bookController.showWindow(mainWindow, true);
 			}
 		});
 		
