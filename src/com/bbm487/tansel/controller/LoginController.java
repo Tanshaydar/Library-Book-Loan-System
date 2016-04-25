@@ -20,14 +20,17 @@ public class LoginController {
 	private SqlExecutions sqlExecutions;
 	private LoginWindow loginWindow;
 	private LoggedUserInformation loggedUserInformation;
+	private UserController userController;
 	private EventBus eventBus;
 	
 	@Inject
 	public LoginController(SqlExecutions sqlExecutions,
 			LoggedUserInformation loggedUserInformation,
+			UserController userController,
 			EventBus eventBus) {
 		this.sqlExecutions = sqlExecutions;
 		this.loggedUserInformation = loggedUserInformation;
+		this.userController = userController;
 		this.eventBus = eventBus;
 	}
 	
@@ -38,7 +41,11 @@ public class LoginController {
 			User loggedUser = new User(
 					resultSet.getInt("user_id"),
 					resultSet.getString("username"),
-					USER_ROLE.values()[resultSet.getInt("role")]); 
+					USER_ROLE.values()[resultSet.getInt("role")]);
+			
+			if(loggedUser.getUserRole() == USER_ROLE.CUSTOMER) {
+				userController.updateCheckOuts(loggedUser);
+			}
 			eventBus.post(new LoginEvent(loggedUser));
 			loggedUserInformation.setLoggedUser(loggedUser);
 			loginWindow.dispose();

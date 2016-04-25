@@ -1,9 +1,15 @@
 package com.bbm487.tansel.controller;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import com.bbm487.tansel.event.UserEvent;
+import com.bbm487.tansel.model.Checkout;
 import com.bbm487.tansel.model.User;
 import com.bbm487.tansel.sql.SqlExecutions;
 import com.bbm487.tansel.view.UserWindow;
@@ -77,14 +83,17 @@ public class UserController {
 	}
 	private void addActionListenerToDelete(){
 		userWindow.addActionListenerToDeleteButton(ae -> {
+			int option = JOptionPane.showConfirmDialog(userWindow, "Are you sure you want to delete this user?", "Delete User?", JOptionPane.YES_NO_OPTION);
+			if(option == JOptionPane.OK_OPTION) {
 			User user = userWindow.getUser();
-			boolean resultSet = sqlExecutions.deleteUser(user);
-			if(!resultSet){
-				JOptionPane.showMessageDialog(userWindow, "User is successfully deleted!", "Success!", JOptionPane.INFORMATION_MESSAGE);
-				userWindow.setVisible(false);
-				eventBus.post(new UserEvent());
-			} else {
-				JOptionPane.showMessageDialog(userWindow, "User could not be deleted!", "Error!", JOptionPane.ERROR_MESSAGE);
+				boolean resultSet = sqlExecutions.deleteUser(user);
+				if(!resultSet){
+					JOptionPane.showMessageDialog(userWindow, "User is successfully deleted!", "Success!", JOptionPane.INFORMATION_MESSAGE);
+					userWindow.setVisible(false);
+					eventBus.post(new UserEvent());
+				} else {
+					JOptionPane.showMessageDialog(userWindow, "User could not be deleted!", "Error!", JOptionPane.ERROR_MESSAGE);
+				}
 			}
 		});
 	}
@@ -99,6 +108,25 @@ public class UserController {
 		userWindow.getButtonSaveUser().setVisible(true);
 		userWindow.getButtonDeleteUser().setVisible(true);
 		userWindow.getButtonEditUser().setVisible(false);
+	}
+	
+	public void updateCheckOuts(User user){
+		ResultSet resultSet = sqlExecutions.getCheckoutList(user);
+		List<Checkout> checkouts = new ArrayList<Checkout>();
+		try {
+			while(resultSet.next()) {
+				checkouts.add(
+						new Checkout(resultSet.getInt("checkout_id"),
+								user.getUserId(), 
+								resultSet.getInt("book_id"),
+								resultSet.getTimestamp("checkout_date"),
+								resultSet.getTimestamp("return_date"))			
+						);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		user.setCheckOuts(checkouts);
 	}
 	
 }

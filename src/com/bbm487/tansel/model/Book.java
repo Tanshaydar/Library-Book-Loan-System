@@ -1,8 +1,10 @@
 package com.bbm487.tansel.model;
 
+import java.util.Comparator;
+
 import com.bbm487.tansel.sql.EnumValues.BOOK_AVAILABILITY;
 
-public class Book {
+public class Book implements Comparable<Book>, Comparator<Book>{
 
 	private int barcode;
 	private String name;
@@ -59,5 +61,20 @@ public class Book {
 	
 	public void setAvailable(BOOK_AVAILABILITY available) {
 		this.available = available;
+	}
+
+	@Override
+	public int compare(Book book1, Book book2) {
+		return book1.getBarcode() - book2.getBarcode();
+	}
+
+	@Override
+	public int compareTo(Book book) {
+		return barcode - book.getBarcode();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		return ((Book)obj).getBarcode() == getBarcode();
 	}
 }

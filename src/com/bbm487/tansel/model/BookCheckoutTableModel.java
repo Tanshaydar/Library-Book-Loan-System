@@ -1,28 +1,29 @@
 package com.bbm487.tansel.model;
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.table.AbstractTableModel;
 
-import com.bbm487.tansel.sql.EnumValues.BOOK_AVAILABILITY;
 import com.google.inject.Inject;
 
-public class BookSearchTableModel extends AbstractTableModel{
+public class BookCheckoutTableModel extends AbstractTableModel{
 
 	public static final String[] columNames = {
-			"Book Name",
-			"Author",
-			"Information",
-			"Available"
+			"Checkout ID",
+			"User ID",
+			"Book Barcode",
+			"Checkout Date",
+			"Return Date"
 	};
 	
-	private List<Book> data;
+	private List<Checkout> data;
 	
 	@Inject
-	public BookSearchTableModel() {
+	public BookCheckoutTableModel() {
 		super();
-		data = new CopyOnWriteArrayList<Book>();
+		data = new CopyOnWriteArrayList<Checkout>();
 	}
 	
 	@Override
@@ -39,13 +40,15 @@ public class BookSearchTableModel extends AbstractTableModel{
 	public Class<?> getColumnClass(int columnIndex) {
 		switch (columnIndex) {
 		case 0:
-			return String.class;
+			return Integer.class;
 		case 1:
-			return String.class;
+			return Integer.class;
 		case 2:
-			return String.class;
+			return Integer.class;
 		case 3:
-			return BOOK_AVAILABILITY.class;
+			return Date.class;
+		case 4:
+			return Date.class;
 		default:
 			return String.class;
 		}
@@ -56,22 +59,24 @@ public class BookSearchTableModel extends AbstractTableModel{
 		if(data.size() == 0 || rowIndex >= data.size()){
 			return null;
 		}
-		Book book = data.get(rowIndex);
+		Checkout checkout = data.get(rowIndex);
 		Object result = null;
 		switch (columnIndex) {
 		case 0:
-			result = book.getName();
+			result = checkout.getCheckout_id();
 			break;
 		case 1:
-			result = book.getAuthor();
+			result = checkout.getUser_id();
 			break;
 		case 2:
-			result = book.getInformation();
+			result = checkout.getBook_id();
 			break;
 		case 3:
-			result = book.getAvailable();
+			result = checkout.getCheckoutDate();
 			break;
-
+		case 4:
+			result = checkout.getReturnDate();
+			break;
 		default:
 			break;
 		}
@@ -96,17 +101,18 @@ public class BookSearchTableModel extends AbstractTableModel{
 		fireTableRowsDeleted(0, data.size());
 	}
 
-	public void addBook(Book book){
-		data.add(book);
+	public void addCheckout(Checkout checkout){
+		data.add(checkout);
 		fireTableDataChanged();
 	}
 
-	public List<Book> getData() {
+	public List<Checkout> getData() {
 		return data;
 	}
 
-	public void remove(Book book) {
-		data.remove(book);
+	public void remove(Checkout checkout) {
+		data.remove(checkout);
 		fireTableDataChanged();
 	}
 }
+

@@ -14,6 +14,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 import com.bbm487.tansel.model.Book;
+import com.bbm487.tansel.model.Checkout;
+import com.bbm487.tansel.model.User;
 import com.bbm487.tansel.sql.EnumValues.BOOK_AVAILABILITY;
 import com.bbm487.tansel.sql.EnumValues.USER_ROLE;
 import com.google.inject.Inject;
@@ -26,6 +28,7 @@ public class BookWindow extends JDialog{
 	private JLabel labelBookInformation;
 	private JLabel labelBookAvailability;
 	private JLabel labelBookBarcode;
+	private JLabel labelCheckoutInformation;
 	
 	private JScrollPane scrollPane;
 	private JTextArea textAreaBookInformation;
@@ -39,6 +42,7 @@ public class BookWindow extends JDialog{
 	private JButton buttonEditBook;
 	private JButton buttonDeleteBook;
 	private JButton buttonCheckout;
+	private JButton buttonWaitingList;
 
 	private Book book;
 
@@ -107,6 +111,12 @@ public class BookWindow extends JDialog{
 		buttonCheckout = new JButton("Checkout");
 		panel.add(buttonCheckout, "cell 3 0,alignx center,growy,hidemode 3");
 		
+		buttonWaitingList = new JButton("Add To Waiting List");
+		panel.add(buttonWaitingList, "cell 3 0,alignx center,growy,hidemode 3");
+		
+		labelCheckoutInformation = new JLabel("");
+		panel.add(labelCheckoutInformation, "cell 3 0, alignx center, growy, hidemode 3");
+		
 		pack();
 	}
 	
@@ -121,6 +131,9 @@ public class BookWindow extends JDialog{
 	}
 	public void addActionListenerToCheckoutButton(ActionListener listener){
 		buttonCheckout.addActionListener(listener);
+	}
+	public void addActionListenerToWaitingListButton(ActionListener listener){
+		buttonWaitingList.addActionListener(listener);
 	}
 
 	public void setBook(Book book) {
@@ -171,23 +184,43 @@ public class BookWindow extends JDialog{
 		buttonDeleteBook.setVisible(false);
 		buttonSaveBook.setVisible(false);
 		buttonCheckout.setVisible(false);
+		buttonWaitingList.setVisible(false);
+		labelCheckoutInformation.setVisible(false);
 	}
 	
-	public void setEditable(boolean editable, USER_ROLE role){
+	public void setEditable(boolean editable, User user){
 		textFieldBookName.setEditable(editable);
 		textFieldBookAuthor.setEditable(editable);
 		textAreaBookInformation.setEditable(editable);
 		comboBoxBookAvailability.setEnabled(editable);
-		if(role == USER_ROLE.CUSTOMER) {
+		if(user.getUserRole() == USER_ROLE.CUSTOMER) {
 			buttonEditBook.setVisible(false);
 			buttonDeleteBook.setVisible(false);
 			buttonSaveBook.setVisible(false);
-			buttonCheckout.setVisible(true);
-		} else if(role == USER_ROLE.LIBRARIAN) {
+			if(book.getAvailable() == BOOK_AVAILABILITY.AVAILABLE) {
+				buttonCheckout.setVisible(true);
+			} else if(book.getAvailable() == BOOK_AVAILABILITY.UNAVAILABLE) {
+				Checkout checkout = user.hasBook(book);
+				if(checkout == null){
+					buttonWaitingList.setVisible(true);
+				} else {
+					String text = "You've checked this book on " + checkout.getCheckoutDate() + " and ";
+					if(checkout.getReturn_date() == null ){
+						text += "you have not returned it yet!";
+					} else {
+						text += "you've returned it on " + checkout.getReturnDate();
+						buttonWaitingList.setVisible(true);
+					}
+					labelCheckoutInformation.setText(text);
+					labelCheckoutInformation.setVisible(true);
+				}
+			}
+			
+		} else if(user.getUserRole() == USER_ROLE.LIBRARIAN) {
 			if(book == null) {
-				buttonDeleteBook.setVisible(editable);
-			} else {
 				buttonDeleteBook.setVisible(false);
+			} else {
+				buttonDeleteBook.setVisible(true);
 			}
 			buttonSaveBook.setVisible(editable);
 			buttonEditBook.setVisible(!editable);

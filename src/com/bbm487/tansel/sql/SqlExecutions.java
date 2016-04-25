@@ -2,12 +2,18 @@ package com.bbm487.tansel.sql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.Date;
+
+import javax.swing.JOptionPane;
 
 import com.bbm487.tansel.model.Book;
 import com.bbm487.tansel.model.User;
+import com.bbm487.tansel.sql.EnumValues.BOOK_AVAILABILITY;
 import com.google.inject.Inject;
 
 public class SqlExecutions {
@@ -152,7 +158,7 @@ public class SqlExecutions {
 	}
 
 	public boolean addBook(Book book) {
-		String query = "INSERT INTO BOOKS (name, author, information, availability) VALUES ('"
+		String query = "INSERT INTO BOOK (name, author, information, available) VALUES ('"
 				+ book.getName() + "', '"
 				+ book.getAuthor() + "', '"
 				+ book.getInformation() + "', "
@@ -163,17 +169,55 @@ public class SqlExecutions {
 
 	public boolean updateBook(Book book) {
 		String query = "UPDATE BOOK SET name ='" + book.getName()
-		+"', author = '" + book.getAuthor()
-		+"', information = '" + book.getInformation()
-		+"', role = " + book.getAvailable().ordinal() + ")";
+		+ "', author = '" + book.getAuthor()
+		+ "', information = '" + book.getInformation()
+		+ "', available = " + book.getAvailable().ordinal()
+		+ "WHERE barcode = " + book.getBarcode();
 		
 		return executeStatement(query);
 	}
 	
 	public boolean deleteBook(Book book){
-		String query = "DELETE FROM BOOK WHERE bardoce = " + book.getBarcode();
+		String query = "DELETE FROM BOOK WHERE barcode = " + book.getBarcode();
 		
 		return executeStatement(query);
+	}
+	
+	public boolean checkoutBook(Book book, User user) {
+		String queryAvailability = "UPDATE BOOK SET available = " + BOOK_AVAILABILITY.UNAVAILABLE.ordinal()
+		+ "WHERE barcode = " + book.getBarcode();
+		executeStatement(queryAvailability);
+		
+		String queryCheckoutList = "INSERT INTO CHECKOUT (user_id, book_id, checkout_date) VALUES (?, ?, ?)";
+		try {
+			PreparedStatement preparedStatement = connection.prepareStatement(queryCheckoutList);
+			preparedStatement.setInt(1, user.getUserId());
+			preparedStatement.setInt(2, book.getBarcode());
+			preparedStatement.setTimestamp(3, new Timestamp(new Date().getTime()));
+			return preparedStatement.execute();
+		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, "There was an error processing the request! \n " + e.toString(), "Database Error!", JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+		}
+		return false;
+	}
+	
+	public boolean addBookToWaitingList(Book book, User user){
+		String query = "INSERT INTO WAITINGLIST (user_id, book_id) VALUES (" + user.getUserId() + ", " + book.getBarcode() + ")";
+		return executeStatement(query);
+	}
+	
+	public ResultSet getCheckoutList(User user) {
+		String query = "SELECT * FROM CHECKOUT WHERE user_id = " + user.getUserId();
+		Statement statement = null;
+		try {
+			statement = connection.createStatement();
+			return statement.executeQuery(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
 	}
 	
 	private boolean executeStatement(String query){
@@ -182,8 +226,10 @@ public class SqlExecutions {
 			statement = connection.createStatement();
 			return statement.execute(query);
 		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null, "There was an error processing the request! \n " + e.toString(), "Database Error!", JOptionPane.ERROR_MESSAGE);
 			e.printStackTrace();
 		}
 		return false;
 	}
+
 }
