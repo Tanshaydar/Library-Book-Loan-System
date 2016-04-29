@@ -1,6 +1,7 @@
 package com.bbm487.tansel;
 
 import com.bbm487.tansel.controller.BookController;
+import com.bbm487.tansel.controller.CheckoutListController;
 import com.bbm487.tansel.controller.LoginController;
 import com.bbm487.tansel.controller.MainController;
 import com.bbm487.tansel.controller.UserController;
@@ -10,6 +11,7 @@ import com.bbm487.tansel.model.BookSearchTableModel;
 import com.bbm487.tansel.sql.SqlExecutions;
 import com.bbm487.tansel.utility.LoggedUserInformation;
 import com.bbm487.tansel.view.BookWindow;
+import com.bbm487.tansel.view.CheckoutListPanel;
 import com.bbm487.tansel.view.CustomerSettingsPanel;
 import com.bbm487.tansel.view.LibrarianSettingsPanel;
 import com.bbm487.tansel.view.LoginWindow;
@@ -32,6 +34,25 @@ public class LibraryBookLoanSystemModule extends AbstractModule{
 	
 	private EventBus eventBus = new EventBus("Default EventBus");
 
+	public static class CheckoutListProvider implements Provider<CheckoutListController>{
+		private CheckoutListPanel checkoutListPanel;
+		private EventBus eventBus;
+		
+		@Inject
+		public CheckoutListProvider(CheckoutListPanel checkoutListPanel, EventBus eventBus) {
+			this.checkoutListPanel = checkoutListPanel;
+			this.eventBus = eventBus;
+		}
+		
+		@Override
+		public CheckoutListController get() {
+			CheckoutListController checkoutListController = new CheckoutListController(checkoutListPanel, eventBus);
+			eventBus.register(checkoutListController);
+			return checkoutListController;
+		}
+		
+	}
+	
 	public static class LoginWindowProvider implements Provider<LoginWindow>{
 
 		private LoginWindowFactory loginWindowFactory;

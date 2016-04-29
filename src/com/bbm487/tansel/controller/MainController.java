@@ -31,6 +31,7 @@ public class MainController {
 	private UserListController userListController;
 	private BookController bookController;
 	private UserController userController;
+	private CheckoutListController checkoutListController;
 	
 	private LoggedUserInformation loggedUserInformation;
 	
@@ -40,6 +41,7 @@ public class MainController {
 			LoginWindowProvider loginWindowProvider,
 			UserListController userListController,
 			UserController userController,
+			CheckoutListController checkoutListController,
 			BookController bookController,
 			LoggedUserInformation loggedUserInformation) {
 		this.sqlExecutions = sqlExecutions;
@@ -48,6 +50,7 @@ public class MainController {
 		
 		this.userListController = userListController;
 		this.userController = userController;
+		this.checkoutListController = checkoutListController;
 		this.bookController = bookController;
 		
 		this.loggedUserInformation = loggedUserInformation;
@@ -167,7 +170,7 @@ public class MainController {
 			
 		});
 		mainWindow.getCustomerSettingsPanel().getButtonSeeMyBookList().addActionListener(ae -> {
-			
+			checkoutListController.showWindow(mainWindow);			
 		});
 		mainWindow.getCustomerSettingsPanel().getButtonSeeMyFines().addActionListener(ae -> {
 			
