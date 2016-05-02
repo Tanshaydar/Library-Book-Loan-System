@@ -166,6 +166,19 @@ public class SqlExecutions {
 		
 		return executeStatement(query);
 	}
+	
+	public ResultSet getBookByBarcode(int barcode){
+		String query = "SELECT * FROM BOOK WHERE barcode = " + barcode;
+		Statement statement = null;
+		try {
+			statement = connection.createStatement();
+			return statement.executeQuery(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
 
 	public boolean updateBook(Book book) {
 		String query = "UPDATE BOOK SET name ='" + book.getName()

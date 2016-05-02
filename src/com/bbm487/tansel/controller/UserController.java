@@ -8,6 +8,7 @@ import java.util.List;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
+import com.bbm487.tansel.builder.CheckoutBuilder;
 import com.bbm487.tansel.event.UserEvent;
 import com.bbm487.tansel.model.Checkout;
 import com.bbm487.tansel.model.User;
@@ -116,11 +117,13 @@ public class UserController {
 		try {
 			while(resultSet.next()) {
 				checkouts.add(
-						new Checkout(resultSet.getInt("checkout_id"),
-								user.getUserId(), 
-								resultSet.getInt("book_id"),
-								resultSet.getTimestamp("checkout_date"),
-								resultSet.getTimestamp("return_date"))			
+						new CheckoutBuilder()
+						.setCheckoutId(resultSet.getInt("checkout_id"))
+						.setUserId(user.getUserId())
+						.setBookId(resultSet.getInt("book_id"))
+						.setCheckoutDate(resultSet.getTimestamp("checkout_date"))
+						.setReturnDate(resultSet.getTimestamp("return_date"))
+						.createCheckout()
 						);
 			}
 		} catch (SQLException e) {

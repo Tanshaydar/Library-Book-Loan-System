@@ -7,6 +7,7 @@ import java.sql.SQLException;
 
 import javax.swing.JOptionPane;
 
+import com.bbm487.tansel.LibraryBookLoanSystemModule.CheckoutListProvider;
 import com.bbm487.tansel.LibraryBookLoanSystemModule.LoginWindowProvider;
 import com.bbm487.tansel.event.BookEvent;
 import com.bbm487.tansel.event.LoginEvent;
@@ -31,7 +32,7 @@ public class MainController {
 	private UserListController userListController;
 	private BookController bookController;
 	private UserController userController;
-	private CheckoutListController checkoutListController;
+	private CheckoutListProvider checkoutListProvider;
 	
 	private LoggedUserInformation loggedUserInformation;
 	
@@ -41,7 +42,7 @@ public class MainController {
 			LoginWindowProvider loginWindowProvider,
 			UserListController userListController,
 			UserController userController,
-			CheckoutListController checkoutListController,
+			CheckoutListProvider checkoutListProvider,
 			BookController bookController,
 			LoggedUserInformation loggedUserInformation) {
 		this.sqlExecutions = sqlExecutions;
@@ -50,7 +51,7 @@ public class MainController {
 		
 		this.userListController = userListController;
 		this.userController = userController;
-		this.checkoutListController = checkoutListController;
+		this.checkoutListProvider = checkoutListProvider;
 		this.bookController = bookController;
 		
 		this.loggedUserInformation = loggedUserInformation;
@@ -170,7 +171,7 @@ public class MainController {
 			
 		});
 		mainWindow.getCustomerSettingsPanel().getButtonSeeMyBookList().addActionListener(ae -> {
-			checkoutListController.showWindow(mainWindow);			
+			checkoutListProvider.get().showWindow(mainWindow, loggedUserInformation.getLoggedUser());			
 		});
 		mainWindow.getCustomerSettingsPanel().getButtonSeeMyFines().addActionListener(ae -> {
 			

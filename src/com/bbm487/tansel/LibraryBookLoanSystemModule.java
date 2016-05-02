@@ -36,17 +36,31 @@ public class LibraryBookLoanSystemModule extends AbstractModule{
 
 	public static class CheckoutListProvider implements Provider<CheckoutListController>{
 		private CheckoutListPanel checkoutListPanel;
+		private SqlExecutions sqlExecutions;
+		private LoggedUserInformation loggedUserInformation;
+		private BookController bookController;
 		private EventBus eventBus;
 		
 		@Inject
-		public CheckoutListProvider(CheckoutListPanel checkoutListPanel, EventBus eventBus) {
+		public CheckoutListProvider(CheckoutListPanel checkoutListPanel,
+				SqlExecutions sqlExecutions,
+				LoggedUserInformation loggedUserInformation,
+				BookController bookController,
+				EventBus eventBus) {
 			this.checkoutListPanel = checkoutListPanel;
+			this.sqlExecutions = sqlExecutions;
+			this.loggedUserInformation = loggedUserInformation;
+			this.bookController = bookController;
 			this.eventBus = eventBus;
 		}
 		
 		@Override
 		public CheckoutListController get() {
-			CheckoutListController checkoutListController = new CheckoutListController(checkoutListPanel, eventBus);
+			CheckoutListController checkoutListController = new CheckoutListController(checkoutListPanel,
+					sqlExecutions,
+					loggedUserInformation,
+					bookController,
+					eventBus);
 			eventBus.register(checkoutListController);
 			return checkoutListController;
 		}

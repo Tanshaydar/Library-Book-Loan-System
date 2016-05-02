@@ -1,8 +1,10 @@
 package com.bbm487.tansel.model;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -48,7 +50,7 @@ public class BookCheckoutTableModel extends AbstractTableModel{
 		case 3:
 			return Date.class;
 		case 4:
-			return Date.class;
+			return String.class;
 		default:
 			return String.class;
 		}
@@ -75,7 +77,18 @@ public class BookCheckoutTableModel extends AbstractTableModel{
 			result = checkout.getCheckoutDate();
 			break;
 		case 4:
-			result = checkout.getReturnDate();
+			if(checkout.getReturn_date() == null) {
+				long MAX_DURATION = TimeUnit.MILLISECONDS.convert(15, TimeUnit.DAYS);
+				long duration = Calendar.getInstance().getTime().getTime() - checkout.getCheckoutDate().getTime();
+				if (duration >= MAX_DURATION) {
+					long days = TimeUnit.DAYS.convert((duration - MAX_DURATION), TimeUnit.MILLISECONDS);
+					result = "YOU ARE LATE FOR (" + days + ") DAYS!";
+				} else {
+					result = "NOT RETURNED YET.";
+				}
+			} else {
+				result = checkout.getReturnDate();
+			}
 			break;
 		default:
 			break;
@@ -108,6 +121,10 @@ public class BookCheckoutTableModel extends AbstractTableModel{
 
 	public List<Checkout> getData() {
 		return data;
+	}
+	
+	public Checkout getCheckout(int row){
+		return data.get(row);
 	}
 
 	public void remove(Checkout checkout) {
