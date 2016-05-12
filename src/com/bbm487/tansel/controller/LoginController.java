@@ -45,6 +45,7 @@ public class LoginController {
 			
 			if(loggedUser.getUserRole() == USER_ROLE.CUSTOMER) {
 				userController.updateCheckOuts(loggedUser);
+				userController.updateWaitingList(loggedUser);
 			}
 			eventBus.post(new LoginEvent(loggedUser));
 			loggedUserInformation.setLoggedUser(loggedUser);

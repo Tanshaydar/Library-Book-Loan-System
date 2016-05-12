@@ -15,6 +15,7 @@ import com.bbm487.tansel.model.User;
 import com.google.inject.Inject;
 
 import net.miginfocom.swing.MigLayout;
+import java.awt.Color;
 
 public class MainWindow extends JFrame{
 
@@ -37,6 +38,7 @@ public class MainWindow extends JFrame{
 	
 	private CustomerSettingsPanel customerSettingsPanel;
 	private LibrarianSettingsPanel librarianSettingsPanel;
+	private JLabel labelNotificationLabel;
 	
 	@Inject
 	public MainWindow(CustomerSettingsPanel customerSettingsPanel,
@@ -52,7 +54,7 @@ public class MainWindow extends JFrame{
 		contentPane = new JPanel();
 		setContentPane(contentPane);
 		
-		contentPane.setLayout(new MigLayout("", "[10px:10px:10px][][600px:n,grow][grow][10px:10px:10px]", "[35px:35px:35px,grow][30px:30px:30px][30px:30px:30px][30px:30px:30px][10px:10px:10px][300px:n,grow][10px:10px:10px]"));
+		contentPane.setLayout(new MigLayout("", "[10px:10px:10px][][600px:n,grow][grow][10px:10px:10px]", "[35px:35px:35px,grow][30px:30px:30px][30px:30px:30px][30px:30px:30px][10px:10px:10px][300px:n,grow][15px:15px:15px]"));
 		
 		buttonLogin = new JButton("Login");
 		contentPane.add(buttonLogin, "hidemode 3,cell 1 0,alignx left,aligny center");
@@ -98,6 +100,10 @@ public class MainWindow extends JFrame{
 		searchResultTable.setFillsViewportHeight(true);
 		searchResultTable.setRowHeight(30);
 		scrollPaneSearchResults.setViewportView(searchResultTable);		
+		
+		labelNotificationLabel = new JLabel("");
+		labelNotificationLabel.setForeground(Color.RED);
+		contentPane.add(labelNotificationLabel, "cell 1 6 3 1");
 		
 		pack();
 		setLocationRelativeTo(null);
@@ -195,5 +201,9 @@ public class MainWindow extends JFrame{
 
 	public JScrollPane getScrollPaneSearchResults() {
 		return scrollPaneSearchResults;
+	}
+	
+	public JLabel getLabelNotificationLabel() {
+		return labelNotificationLabel;
 	}
 }

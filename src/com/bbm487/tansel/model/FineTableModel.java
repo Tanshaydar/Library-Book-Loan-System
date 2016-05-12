@@ -1,7 +1,6 @@
 package com.bbm487.tansel.model;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
@@ -10,22 +9,20 @@ import javax.swing.table.AbstractTableModel;
 
 import com.google.inject.Inject;
 
-public class BookCheckoutTableModel extends AbstractTableModel{
+public class FineTableModel extends AbstractTableModel{
 
 	public static final String[] columnNames = {
-			"Checkout ID",
-			"User ID",
-			"Book Barcode",
-			"Checkout Date",
-			"Return Date"
+			"Book Name",
+			"Days Late",
+			"Cost"
 	};
 	
-	private List<Checkout> data;
+	private List<Fine> data;
 	
 	@Inject
-	public BookCheckoutTableModel() {
+	public FineTableModel() {
 		super();
-		data = new CopyOnWriteArrayList<Checkout>();
+		data = new CopyOnWriteArrayList<Fine>();
 	}
 	
 	@Override
@@ -42,53 +39,32 @@ public class BookCheckoutTableModel extends AbstractTableModel{
 	public Class<?> getColumnClass(int columnIndex) {
 		switch (columnIndex) {
 		case 0:
-			return Integer.class;
+			return String.class;
 		case 1:
 			return Integer.class;
 		case 2:
 			return Integer.class;
-		case 3:
-			return Date.class;
-		case 4:
-			return String.class;
 		default:
 			return String.class;
 		}
 	}
-
+	
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		if(data.size() == 0 || rowIndex >= data.size()){
 			return null;
 		}
-		Checkout checkout = data.get(rowIndex);
+		Fine fine = data.get(rowIndex);
 		Object result = null;
 		switch (columnIndex) {
 		case 0:
-			result = checkout.getCheckout_id();
+			result = fine.getBook().getName();
 			break;
 		case 1:
-			result = checkout.getUser_id();
+			result = fine.getDaysLate();
 			break;
 		case 2:
-			result = checkout.getBook_id();
-			break;
-		case 3:
-			result = checkout.getCheckoutDate();
-			break;
-		case 4:
-			if(checkout.getReturn_date() == null) {
-				long MAX_DURATION = TimeUnit.MILLISECONDS.convert(15, TimeUnit.DAYS);
-				long duration = Calendar.getInstance().getTime().getTime() - checkout.getCheckoutDate().getTime();
-				if (duration >= MAX_DURATION) {
-					long days = TimeUnit.DAYS.convert((duration - MAX_DURATION), TimeUnit.MILLISECONDS);
-					result = "YOU ARE LATE FOR (" + days + ") DAYS!";
-				} else {
-					result = "NOT RETURNED YET.";
-				}
-			} else {
-				result = checkout.getReturnDate();
-			}
+			result = fine.getCost();
 			break;
 		default:
 			break;
@@ -114,16 +90,16 @@ public class BookCheckoutTableModel extends AbstractTableModel{
 		fireTableRowsDeleted(0, data.size());
 	}
 
-	public void addCheckout(Checkout checkout){
-		data.add(checkout);
+	public void addFine(Fine fine){
+		data.add(fine);
 		fireTableDataChanged();
 	}
 
-	public List<Checkout> getData() {
+	public List<Fine> getData() {
 		return data;
 	}
 	
-	public Checkout getCheckout(int row){
+	public Fine getCheckout(int row){
 		return data.get(row);
 	}
 
@@ -131,5 +107,5 @@ public class BookCheckoutTableModel extends AbstractTableModel{
 		data.remove(checkout);
 		fireTableDataChanged();
 	}
+	
 }
-

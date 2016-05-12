@@ -12,12 +12,14 @@ public class User {
 	private String password;
 	private USER_ROLE userRole;
 	private List<Checkout> checkOuts;
+	private List<Waiting> waitingList;
 	
 	public User(int userId, String userName, USER_ROLE userRole) {
 		this.userId = userId;
 		this.userName = userName;
 		this.userRole = userRole;
 		checkOuts = new ArrayList<Checkout>();
+		waitingList = new ArrayList<Waiting>();
 	}
 
 	public User() {
@@ -70,5 +72,22 @@ public class User {
 			}
 		}
 		return null;
+	}
+
+	public void setWaitingList(List<Waiting> waitingList) {
+		this.waitingList = waitingList;
+	}
+	
+	public List<Waiting> getWaitingList() {
+		return waitingList;
+	}
+	
+	public boolean hasBookInWaitingList(Book book){
+		for (Waiting waiting : waitingList) {
+			if(waiting.getBook_id() == book.getBarcode()) {
+				return true;
+			}
+		}
+		return false;
 	}
 }

@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import com.bbm487.tansel.event.BookEvent;
+import com.bbm487.tansel.event.CheckoutEvent;
 import com.bbm487.tansel.event.UserEvent;
 import com.bbm487.tansel.model.Book;
 import com.bbm487.tansel.sql.SqlExecutions;
@@ -103,6 +104,7 @@ public class BookController {
 		bookWindow.addActionListenerToCheckoutButton(ae -> {
 			Book book = bookWindow.getBook();
 			sqlExecutions.checkoutBook(book, loggedUserInformation.getLoggedUser());
+			eventBus.post(new CheckoutEvent(loggedUserInformation.getLoggedUser()));
 			JOptionPane.showMessageDialog(bookWindow, "Book is successfully checked out! \n Happy reading!", "Success!", JOptionPane.INFORMATION_MESSAGE);
 			bookWindow.setVisible(false);
 		});

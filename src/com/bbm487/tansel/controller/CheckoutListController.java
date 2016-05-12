@@ -109,7 +109,7 @@ public class CheckoutListController {
 	}
 
 
-	private void fillCheckoutTable(User user){
+	void fillCheckoutTable(User user){
 		List<Checkout> checkoutList = new ArrayList<Checkout>();
 		ResultSet resultSet = sqlExecutions.getCheckoutList(user);
 		
@@ -135,4 +135,7 @@ public class CheckoutListController {
 		} 
 	}
 	
+	public CheckoutListPanel getCheckoutListPanel() {
+		return checkoutListPanel;
+	}
 }

@@ -9,8 +9,11 @@ import javax.swing.JOptionPane;
 
 import com.bbm487.tansel.LibraryBookLoanSystemModule.CheckoutListProvider;
 import com.bbm487.tansel.LibraryBookLoanSystemModule.LoginWindowProvider;
+import com.bbm487.tansel.event.BookAvailableEvent;
 import com.bbm487.tansel.event.BookEvent;
+import com.bbm487.tansel.event.BookLateEvent;
 import com.bbm487.tansel.event.LoginEvent;
+import com.bbm487.tansel.event.LogoutEvent;
 import com.bbm487.tansel.model.Book;
 import com.bbm487.tansel.model.BookSearchTableModel;
 import com.bbm487.tansel.sql.EnumValues.BOOK_AVAILABILITY;
@@ -33,6 +36,8 @@ public class MainController {
 	private BookController bookController;
 	private UserController userController;
 	private CheckoutListProvider checkoutListProvider;
+	private ReturnBookController returnBookController;
+	private FineController fineController;
 	
 	private LoggedUserInformation loggedUserInformation;
 	
@@ -43,6 +48,8 @@ public class MainController {
 			UserListController userListController,
 			UserController userController,
 			CheckoutListProvider checkoutListProvider,
+			ReturnBookController returnController,
+			FineController fineController,
 			BookController bookController,
 			LoggedUserInformation loggedUserInformation) {
 		this.sqlExecutions = sqlExecutions;
@@ -52,6 +59,9 @@ public class MainController {
 		this.userListController = userListController;
 		this.userController = userController;
 		this.checkoutListProvider = checkoutListProvider;
+		this.returnBookController = returnController;
+		this.fineController = fineController;
+		
 		this.bookController = bookController;
 		
 		this.loggedUserInformation = loggedUserInformation;
@@ -149,6 +159,9 @@ public class MainController {
 		mainWindow.addActionlistenerLogoutButton(ae -> {
 			mainWindow.enableLogoutUiChanges();
 			loggedUserInformation.setLoggedUser(null);
+			mainWindow.getLabelNotificationLabel().setText(null);
+			mainWindow.getBookSearchTableModel().clearTable();
+			mainWindow.repaint();
 		});
 	}
 	
@@ -168,18 +181,28 @@ public class MainController {
 
 	private void addCustomerActionListeners() {
 		mainWindow.getCustomerSettingsPanel().getButtonReturnBook().addActionListener(ae -> {
-			
+			returnBookController.showWindow(mainWindow);
 		});
 		mainWindow.getCustomerSettingsPanel().getButtonSeeMyBookList().addActionListener(ae -> {
 			checkoutListProvider.get().showWindow(mainWindow, loggedUserInformation.getLoggedUser());			
 		});
 		mainWindow.getCustomerSettingsPanel().getButtonSeeMyFines().addActionListener(ae -> {
-			
+			fineController.showWindow(mainWindow);;
 		});
 	}
 	
 	@Subscribe
 	public void handleLoginEvent(LoginEvent loginEvent){
 		mainWindow.enableLoginUiChanges(loginEvent.getUser());
+	}
+	
+	@Subscribe
+	public void handleBookAvailableEvent(BookAvailableEvent event){
+		mainWindow.getLabelNotificationLabel().setText(mainWindow.getLabelNotificationLabel().getText() + " | " + event.getBook().getName() + " is available!");
+	}
+	
+	@Subscribe
+	public void handleBookLateEvent(BookLateEvent event){
+		mainWindow.getLabelNotificationLabel().setText(mainWindow.getLabelNotificationLabel().getText() + " | " + event.getBook().getName() + " is late!");
 	}
 }

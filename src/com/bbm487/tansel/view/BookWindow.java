@@ -202,7 +202,14 @@ public class BookWindow extends JDialog{
 			} else if(book.getAvailable() == BOOK_AVAILABILITY.UNAVAILABLE) {
 				Checkout checkout = user.hasBook(book);
 				if(checkout == null){
-					buttonWaitingList.setVisible(true);
+					if(user.hasBookInWaitingList(book)) {
+						String text = "You've already added this book to your waiting list!";
+						
+						labelCheckoutInformation.setText(text);
+						labelCheckoutInformation.setVisible(true);
+					} else {
+						buttonWaitingList.setVisible(true);
+					}
 				} else {
 					String text = "You've checked this book on " + checkout.getCheckoutDate() + " and ";
 					if(checkout.getReturn_date() == null ){

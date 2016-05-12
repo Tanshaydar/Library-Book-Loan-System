@@ -233,6 +233,29 @@ public class SqlExecutions {
 		return null;
 	}
 	
+	public ResultSet getWaitingList(User user) {
+		String query = "SELECT * FROM WAITINGLIST WHERE user_id = " + user.getUserId();
+		Statement statement = null;
+		try {
+			statement = connection.createStatement();
+			return statement.executeQuery(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
+	
+	public boolean returnBook(User user, int barcode){
+		String queryAvailability = "UPDATE BOOK SET available = " + BOOK_AVAILABILITY.AVAILABLE.ordinal() + " WHERE barcode = " + barcode;
+		executeStatement(queryAvailability);
+		
+		
+		String queryCheckoutList = "UPDATE CHECKOUT SET return_date = '" + new Timestamp(new Date().getTime()) 
+				+ "' WHERE user_id = " + user.getUserId() + " AND book_id = " + barcode;
+		return executeStatement(queryCheckoutList);
+	}
+	
 	private boolean executeStatement(String query){
 		Statement statement = null;
 		try {

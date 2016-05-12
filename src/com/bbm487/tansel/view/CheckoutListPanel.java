@@ -38,8 +38,10 @@ public class CheckoutListPanel extends JPanel{
 	}
 	
 	public void removeUserColumns() {
-		checkoutListTable.removeColumn(checkoutListTable.getColumnModel().getColumn(0));
-		checkoutListTable.removeColumn(checkoutListTable.getColumnModel().getColumn(0));
+		if(checkoutListTable.getColumnCount() == 5) {
+			checkoutListTable.removeColumn(checkoutListTable.getColumnModel().getColumn(0));
+			checkoutListTable.removeColumn(checkoutListTable.getColumnModel().getColumn(0));			
+		}
 	}
 	
 	public BookCheckoutTableModel getBookCheckoutTableModel() {
